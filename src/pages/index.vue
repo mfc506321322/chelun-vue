@@ -1,0 +1,277 @@
+<template>
+    <div class="wrap">
+        <header class="header">
+            <ul class="topTab">
+                <li 
+                v-for="(val,ind) in topTab" 
+                :class="ind == topCount ? 'active' : 'normal'">
+                    {{val}}
+                </li>
+            </ul>
+            <div class="banner">
+                <van-swipe :autoplay="3000" indicator-color="white" :show-indicators='false'>
+                    <van-swipe-item>
+                        <p>已有23333个用户在车轮补换驾照成功</p>
+                        <img src="http://localhost:8080/src/assets/banner@3x.png" alt="">
+                    </van-swipe-item>
+                    <van-swipe-item>
+                        <p>已有23333个用户在车轮补换驾照成功</p>
+                        <img src="http://localhost:8080/src/assets/banner@3x.png" alt="">
+                    </van-swipe-item>
+                </van-swipe>
+            </div>
+        </header>
+        <main class="main">
+            <ul class="middleList">
+                <li class="serType">
+                    服务类型
+                    <span @click="serShow=true">{{serValue}}</span>
+                </li>
+                <li>
+                    当前驾照签发城市
+                    <em @click="fromShow=true">请选择签发地</em>
+                </li>
+                <li>
+                    可补换的签发城市
+                    <em>请选择补换地</em>
+                </li>
+                <li>
+                    服务费
+                    <b>￥399</b>
+                </li>
+                <li class="serType">
+                    优惠
+                </li>
+            </ul>
+        </main>
+        <footer class="footer">
+            <div class="left">
+                实付:<b>￥399</b>
+            </div>
+            <div class="right">
+                立即支付
+            </div>
+        </footer>
+        <van-popup 
+        v-model="serShow" 
+        position="bottom">
+            <van-picker
+            show-toolbar
+            title="服务类型"
+            :columns="serColumns"
+            @cancel="onCancel"
+            @confirm="onConfirm"
+            />
+        </van-popup>
+        <van-popup 
+        v-model="fromShow" 
+        position="bottom">
+            内容2
+        </van-popup>
+    </div>
+</template>
+<script>
+import Vue from 'vue';
+import { Swipe, SwipeItem,Popup,Picker } from 'vant';
+Vue.use(Popup);
+Vue.use(Picker);
+Vue.use(Swipe).use(SwipeItem);
+export default {
+    name:'app',
+    data(){
+        return{
+            topTab:['订单提交','填写收货地址','正在办理','办理完成'],
+            topCount:0,
+            serValue:'换驾照',
+            serShow: false,
+            fromShow:false,
+            serColumns: ['换驾照','补驾照']
+        }
+    },
+    methods: {
+        onConfirm(value, index) {
+            this.serValue = value;
+            this.serShow=false;
+            this.fromShow=false;
+        },
+        onCancel() {
+            this.serShow=false;
+            this.fromShow=false;
+        }
+    }
+}
+</script>
+<style lang="scss" scoped>
+$baseline-px:37.5px;
+@function rem($px-values) {
+    $baseline-rem: $baseline-px / 1rem * 1;
+    $px-values: $px-values / $baseline-rem;
+    @return $px-values;
+}
+.wrap{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display:flex;
+    flex-direction: column;
+}
+.header{
+    width: 100%;
+    .topTab{
+        width: 100%;
+        height: rem(47px);
+        display: flex;
+        li{
+            flex:1;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            // flex-shrink: 1;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            flex-basis: auto;
+            // padding: 0 rem(10px);
+            color: #3aaffd;
+            position: relative;
+            &:last-child{
+                &::before{
+                    content: '';
+                    display: none !important;
+                }
+                &::after{
+                    content: '';
+                    display: none !important;
+                }
+            }
+            &.normal{
+                &::before{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    border-top: rem(24px) solid #eee;
+                    border-bottom: rem(24px) solid #eee;
+                    border-left: rem(8.8px) solid #fff;
+                    border-right: rem(1.1px) solid #eee;
+                    height: 0;
+                    top: rem(-1px);
+                    right: 0;
+                    z-index: 1;
+                    font-size: 0;
+                }
+                &::after{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    border-top: rem(24px) solid #fff;
+                    border-bottom: rem(24px) solid #fff;
+                    border-left: rem(8.8px) solid transparent;
+                    border-right: rem(1.1px) solid #fff;
+                    top: rem(-1px);
+                    right: -1px;
+                    z-index: 2;
+                }
+            }
+            &.active{
+                background: #3aaffd;
+                color: #fff;
+                &::after {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    border-top: rem(23.5px) solid #fff;
+                    border-bottom: rem(23.5px) solid #fff;
+                    border-left: rem(8.8px) solid #3aaffd;
+                    top: 0;
+                    right: rem(-8px);
+                    z-index: 1;
+                }
+            }
+        }
+    }
+    .banner{
+        width: 100%;
+        position: relative;
+        p{
+            color: #fb611f;
+            text-align: center;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: rem(24px);
+            z-index: 999;
+        }
+        img{
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    }
+}
+.main{
+    flex: 1;
+    overflow-y: auto;
+    background: #eee;
+    .middleList{
+        width: 100%;
+        li{
+            background: #fff;
+            width: 100%;
+            height: rem(53.7px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 rem(11.7px);
+            font-size: rem(17.5px);
+            position: relative;
+            border-bottom: 1px solid #e8e8e8;
+            &.serType{
+                margin-top: rem(11px);
+                &::after{
+                    content: '';
+                    width: rem(9.4px);
+                    height: rem(9.4px);
+                    display: inline-block;
+                    border-top: 2px solid #dcdcdc;
+                    border-right: 2px solid #dcdcdc;
+                    -webkit-transform: rotate(45deg);
+                    position: absolute;
+                    right: rem(11.8px);
+                    top: rem(20px);
+                }
+                span{
+                    font-size: rem(16px);
+                    padding-right:rem(11.7px); 
+                }
+            }
+            em{
+                font-size: rem(16px);
+                color: #999;
+            }
+            b{
+                font-size: rem(16px);
+                color: red;
+            }
+        }
+    }
+}
+.footer{
+    width: 100%;
+    height: rem(50px);
+    display: flex;
+    justify-content: space-between;
+    padding-left: rem(15px);
+    align-items: center;
+    font-size: rem(17.5px);
+    b{
+        color: red;
+    }
+    .right{
+        padding: 0 rem(15px);
+        background: #999;
+        color: #fff;
+        height: 100%;
+        line-height: rem(50px);
+    }
+}
+</style>
+
