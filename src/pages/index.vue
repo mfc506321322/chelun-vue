@@ -21,6 +21,7 @@
                 </van-swipe>
             </div>
         </header>
+        <Upload></Upload>
         <main class="main">
             <ul class="middleList">
                 <li class="serType">
@@ -73,6 +74,7 @@
 <script>
 import Vue from 'vue';
 import { Swipe, SwipeItem,Popup,Picker } from 'vant';
+import Upload from '../components/Upload';
 Vue.use(Popup);
 Vue.use(Picker);
 Vue.use(Swipe).use(SwipeItem);
@@ -98,6 +100,9 @@ export default {
             this.serShow=false;
             this.fromShow=false;
         }
+    },
+    components: {
+        Upload
     }
 }
 </script>
