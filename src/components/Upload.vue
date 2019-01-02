@@ -52,7 +52,7 @@ export default {
             updataList: 'upload/upadteList'
         }),
         onSelect(item) {
-            // 点击选项时默认不会关闭菜单，可以手动关
+            // 点击选项时默认不会关闭菜单，可以手动关闭
             this.show = false;
             console.log(item);
         },
