@@ -18,8 +18,10 @@ const state = {
 }
 
 const muatations = {
-  upadteList(state, payload){
-    state[payload.index].src = payload.src
+  updataList(state, payload){
+    console.log('state...',state)
+    console.log('payload...',payload)
+    state.list[payload.index].src = payload.src
   }
 }
 

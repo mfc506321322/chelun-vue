@@ -13,6 +13,7 @@
         <van-actionsheet
         v-model="show"
         :actions="actions"
+        cancel-text="取消"
         @select="onSelect"
         />
     </div>
@@ -35,13 +36,12 @@ export default {
             show: false,
             actions: [
                 {
-                    name: '拍照'
+                    name: '拍照',
+                    id: 1
                 },
                 {
-                    name: '相册'
-                },
-                {
-                    name: '取消'
+                    name: '相册',
+                    id: 2
                 }
             ],
             count:0
@@ -49,16 +49,32 @@ export default {
     },
     methods: {
         ...mapMutations({
-            updataList: 'upload/upadteList'
+            updataList: 'upload/updataList'
         }),
         onSelect(item) {
             // 点击选项时默认不会关闭菜单，可以手动关闭
             this.show = false;
-            console.log(item);
+            console.log(item.id);
+            uploadImg(item.id).then(res=>{
+                if (res.code == 0){
+                    let src = '';
+                    if (/picture.eclicks.cn/.test(res.data.image01)) {
+                        src = res.data.image01.replace('http://', '//');
+                    } else {
+                        src = '//picture.eclicks.cn/' + res.data.image01;
+                    }
+                    console.log('111');
+                    this.updataList({
+                        src,
+                        index: this.count
+                    })
+                }else{
+                    alert(res.msg);
+                }
+            })
         },
         showDig(ind){
             this.show = true;
-            console.log(ind);
             this.count = ind;
         }
     }
