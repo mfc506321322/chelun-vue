@@ -1,11 +1,16 @@
 <template>
     <div class="upload">
-        <img class="title" :src="list[count].src" alt="" v-show="show">
-        <ul class="upList">
+        <img
+        :class="list[count].src.indexOf('localhost') > -1 ? 'title' : 'news'" 
+        :src="list[count].src" 
+        v-show="show">
+        <ul :class="serValue === '换驾照' ? 'upList' : 'upList2'">
             <li v-for="(val,ind) in list" :key="ind"
-            @click="showDig(ind)">
+            @click="showDig(ind)" v-if="serValue === '换驾照' || val.type">
                 <div class="pic">
-                    <img src="http://localhost:8080/src/assets/IdCard/add.png" alt="">
+                    <img :src="val.pic" 
+                    :class="val.pic.indexOf('localhost') > -1 ? '' : 'opens'"
+                    >
                 </div>
                 <span>{{val.desc}}</span>
             </li>
@@ -26,6 +31,7 @@ import {uploadImg} from '../api/index';
 Vue.use(Actionsheet);
 export default {
     name:'upload',
+    props:['serValue'],
     computed: {
         ...mapState({
             list: state=>state.upload.list
@@ -56,7 +62,12 @@ export default {
             this.show = false;
             console.log(item.id);
             uploadImg(item.id).then(res=>{
-                if (res.code == 0){
+                console.log('res...',res);
+                this.updataList({
+                    src:res.data.url,
+                    index: this.count
+                })
+                /* if (res.code == 1){
                     let src = '';
                     if (/picture.eclicks.cn/.test(res.data.image01)) {
                         src = res.data.image01.replace('http://', '//');
@@ -70,7 +81,7 @@ export default {
                     })
                 }else{
                     alert(res.msg);
-                }
+                } */
             })
         },
         showDig(ind){
@@ -98,6 +109,15 @@ $baseline-px:37.5px;
     margin: 0 5%;
     top: 100px;
 }
+.news{
+    width: auto;
+    height: 50%;
+    position: fixed;
+    z-index: 9999;
+    left:50%;
+    transform: translate3d(-50%,0,0);
+    top: 100px;
+}
 .upList{
     width: 100%;
     display: flex;
@@ -115,9 +135,49 @@ $baseline-px:37.5px;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
             img{
                 width: rem(25px);
                 height: auto;
+                &.opens{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        span{
+            margin-top: rem(5px);
+            width: rem(50px);
+            font-size: rem(14px);
+            text-align: center;
+        }
+    }
+}
+.upList2{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: rem(17px) rem(12.5px);
+    li{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .pic{
+            width: rem(50px);
+            height: rem(40px);
+            border:1px solid #ccc;
+            border-radius: rem(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            img{
+                width: rem(25px);
+                height: auto;
+                &.opens{
+                    width: 100%;
+                    height: 100%;
+                }
             }
         }
         span{

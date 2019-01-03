@@ -15,13 +15,13 @@
                         <img src="http://localhost:8080/src/assets/banner@3x.png" alt="">
                     </van-swipe-item>
                     <van-swipe-item>
-                        <p>已有23333个用户在车轮补换驾照成功</p>
+                        <p>已有66666个用户在车轮补换驾照成功</p>
                         <img src="http://localhost:8080/src/assets/banner@3x.png" alt="">
                     </van-swipe-item>
                 </van-swipe>
             </div>
         </header>
-        <Upload></Upload>
+        <Upload :serValue="serValue"></Upload>
         <main class="main">
             <ul class="middleList">
                 <li class="serType">
@@ -30,11 +30,11 @@
                 </li>
                 <li>
                     当前驾照签发城市
-                    <em @click="fromShow=true">请选择签发地</em>
+                    <em @click="fromShow=true">{{qfVal}}</em>
                 </li>
                 <li>
                     可补换的签发城市
-                    <em>请选择补换地</em>
+                    <em @click="fromShow2=true">{{bfVal}}</em>
                 </li>
                 <li>
                     服务费
@@ -67,7 +67,12 @@
         <van-popup 
         v-model="fromShow" 
         position="bottom">
-            内容2
+            <TypePicker @close="onCancel" @enterQf="enterQf" @changeQf="changeQf" title="请选择签发地"></TypePicker>
+        </van-popup>
+        <van-popup 
+        v-model="fromShow2" 
+        position="bottom">
+            <TypePicker @close="onCancel" @enterQf="enterQf" @changeQf="changeQf" title="请选择补发地"></TypePicker>
         </van-popup>
     </div>
 </template>
@@ -75,6 +80,7 @@
 import Vue from 'vue';
 import { Swipe, SwipeItem,Popup,Picker } from 'vant';
 import Upload from '../components/Upload';
+import TypePicker from '../components/TypePicker';
 Vue.use(Popup);
 Vue.use(Picker);
 Vue.use(Swipe).use(SwipeItem);
@@ -87,7 +93,10 @@ export default {
             serValue:'换驾照',
             serShow: false,
             fromShow:false,
-            serColumns: ['换驾照','补驾照']
+            fromShow2:false,
+            serColumns: ['换驾照','补驾照'],
+            qfVal:'请选择签发地',
+            bfVal:'请选择补发地'
         }
     },
     methods: {
@@ -99,10 +108,27 @@ export default {
         onCancel() {
             this.serShow=false;
             this.fromShow=false;
+            this.fromShow2=false;
+        },
+        enterQf(arr,type){
+            let str = '';
+            arr.forEach(item => {
+                str += item.name + ' ';
+            })
+            type ? this.bfVal = str : this.qfVal = str;
+            this.onCancel();
+        },
+        changeQf(arr,type){
+            let str = '';
+            arr.forEach(item => {
+                str += item.name + ' ';
+            })
+            type ? this.bfVal = str : this.qfVal = str;
         }
     },
     components: {
-        Upload
+        Upload,
+        TypePicker
     }
 }
 </script>

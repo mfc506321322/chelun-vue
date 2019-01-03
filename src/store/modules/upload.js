@@ -1,31 +1,41 @@
 const state = {
   list: [{
     src: 'http://localhost:8080/src/assets/IdCard/id-a.png',
-    desc: '身份证正面'
+    pic:'http://localhost:8080/src/assets/IdCard/add.png',
+    desc: '身份证正面',
+    type: true
   }, {
     src: 'http://localhost:8080/src/assets/IdCard/id-b.png',
-    desc: '身份证反面'
+    pic:'http://localhost:8080/src/assets/IdCard/add.png',
+    desc: '身份证反面',
+    type: true
   }, {
     src: 'http://localhost:8080/src/assets/IdCard/licence-a.png',
-    desc: '驾驶证正页'
+    pic:'http://localhost:8080/src/assets/IdCard/add.png',
+    desc: '驾驶证正页',
+    type: false
   }, {
     src: 'http://localhost:8080/src/assets/IdCard/licence-b.png',
-    desc: '驾驶证副页'
+    pic:'http://localhost:8080/src/assets/IdCard/add.png',
+    desc: '驾驶证副页',
+    type: false
   }, {
     src: 'http://localhost:8080/src/assets/IdCard/photo.png',
-    desc: '白底半身照'
+    pic:'http://localhost:8080/src/assets/IdCard/add.png',
+    desc: '白底半身照',
+    type: true
   }]
 }
 
-const muatations = {
+const mutations = {
   updataList(state, payload){
-    console.log('state...',state)
-    console.log('payload...',payload)
     state.list[payload.index].src = payload.src
+    state.list[payload.index].pic = payload.src
   }
 }
 
 export default {
+  namespaced: true,
   state,
-  muatations
+  mutations
 }
