@@ -48,7 +48,7 @@ const actions = {
         let proIndex = state.rootList.findIndex(item=>item.name==state.city[0].name);
         let cityIndex = state.rootList[proIndex].list.findIndex(item=>item.name==state.city[1].name);
         let res = await costList(1, state.rootList[proIndex].id, state.rootList[proIndex].list[cityIndex].id);
-        console.log('res...', res);
+        // console.log('res...', res);
         let obj = {province_list:{},city_list:{},county_list:{}};
         res.data.forEach(item=>{
             if (item.source_city == 1){
@@ -76,7 +76,7 @@ const actions = {
             })
             obj.province_list[item.id] = item.name;
         })
-        console.log('obj...', obj);
+        // console.log('obj...', obj);
         commit('updateState', {costList: obj})
     }
 }

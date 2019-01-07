@@ -1,6 +1,6 @@
 // const host = /localhost/.test(window.location.host)?'http://123.206.55.50:14000':'http://123.206.55.50:14000';
 import JSBridge from '@/utils/JSBridge.js';
-
+// const JSBridge = require('@/utils/JSBridge.js');
 function sendRequest(url, method = 'GET', data = {}) {
   let params = {
       method

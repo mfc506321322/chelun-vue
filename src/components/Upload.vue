@@ -27,7 +27,7 @@
 import Vue from 'vue';
 import {mapState, mapMutations} from 'vuex';
 import { Actionsheet } from 'vant';
-import {uploadImg} from '../api/index';
+import {uploadImg} from '@/api/index';
 Vue.use(Actionsheet);
 export default {
     name:'upload',
@@ -57,32 +57,48 @@ export default {
         ...mapMutations({
             updataList: 'upload/updataList'
         }),
-        onSelect(item) {
+        judgePic(){
+            let flag = this.list.every(item => {
+                return item.pic.indexOf('add.png') === -1;
+            })
+            this.$emit('changePic',flag);
+        },
+        async onSelect(item) {
             // 点击选项时默认不会关闭菜单，可以手动关闭
-            this.show = false;
-            console.log(item.id);
-            uploadImg(item.id).then(res=>{
+            let res = await uploadImg(item.id);
+            if (res.result == 1){
+                this.updataList({
+                    src:res.data.url,
+                    index: this.count
+                })
+                this.judgePic();
+                this.show = false;
+            }else{
+                alert('上传图片失败');
+            }
+            /* uploadImg(item.id).then(res=>{
                 console.log('res...',res);
                 this.updataList({
                     src:res.data.url,
                     index: this.count
                 })
-                /* if (res.code == 1){
-                    let src = '';
-                    if (/picture.eclicks.cn/.test(res.data.image01)) {
-                        src = res.data.image01.replace('http://', '//');
-                    } else {
-                        src = '//picture.eclicks.cn/' + res.data.image01;
-                    }
-                    console.log('111');
-                    this.updataList({
-                        src,
-                        index: this.count
-                    })
-                }else{
-                    alert(res.msg);
-                } */
-            })
+                this.judgePic();
+                // if (res.code == 1){
+                //     let src = '';
+                //     if (/picture.eclicks.cn/.test(res.data.image01)) {
+                //         src = res.data.image01.replace('http://', '//');
+                //     } else {
+                //         src = '//picture.eclicks.cn/' + res.data.image01;
+                //     }
+                //     console.log('111');
+                //     this.updataList({
+                //         src,
+                //         index: this.count
+                //     })
+                // }else{
+                //     alert(res.msg);
+                // }
+            }) */
         },
         showDig(ind){
             this.show = true;

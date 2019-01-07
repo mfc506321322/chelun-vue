@@ -1,13 +1,13 @@
 <template>
     <div class="wrap">
         <header class="header">
-            <ul class="topTab">
+            <!-- <ul class="topTab">
                 <li 
                 v-for="(val,ind) in topTab" 
-                :class="ind == topCount ? 'active' : 'normal'">
+                :class="ind == topCount ? 'active' : ind == (topCount-1) ? 'prevActive' : 'normal'">
                     {{val}}
                 </li>
-            </ul>
+            </ul> -->
             <div class="banner">
                 <van-swipe :autoplay="3000" indicator-color="white" :show-indicators='false'>
                     <van-swipe-item>
@@ -21,7 +21,7 @@
                 </van-swipe>
             </div>
         </header>
-        <Upload :serValue="serValue"></Upload>
+        <Upload :serValue="serValue" @changePic="judgeSelect"></Upload>
         <main class="main">
             <ul class="middleList">
                 <li class="serType">
@@ -49,7 +49,7 @@
             <div class="left">
                 实付:<b>￥399</b>
             </div>
-            <div class="right">
+            <div :class="pay ? 'right-ready':'right'" @click="payBtn">
                 立即支付
             </div>
         </footer>
@@ -96,8 +96,15 @@ export default {
             fromShow2:false,
             serColumns: ['换驾照','补驾照'],
             qfVal:'请选择签发地',
-            bfVal:'请选择补发地'
+            bfVal:'请选择补发地',
+            picFlag:false
         }
+    },
+    computed: {
+        pay(){
+            // return this.qfVal!='请选择签发地' && this.bfVal!='请选择补发地' && this.picFlag;
+            return this.qfVal!='请选择签发地' && this.bfVal!='请选择补发地';
+        }  
     },
     methods: {
         onConfirm(value, index) {
@@ -124,6 +131,18 @@ export default {
                 str += item.name + ' ';
             })
             type ? this.bfVal = str : this.qfVal = str;
+        },
+        payBtn(){
+            console.log(this.pay);
+            if(this.pay){
+                this.$router.push({path:'/address/1'}); 
+            }
+        },
+        judgeSelect(flag){
+            console.log('flag...',flag);
+            if(flag){
+                this.picFlag = flag
+            }
         }
     },
     components: {
@@ -140,8 +159,7 @@ $baseline-px:37.5px;
     @return $px-values;
 }
 .wrap{
-    width: 100%;
-    height: 100%;
+    flex:1;
     overflow: hidden;
     display:flex;
     flex-direction: column;
@@ -197,6 +215,34 @@ $baseline-px:37.5px;
                     border-bottom: rem(24px) solid #fff;
                     border-left: rem(8.8px) solid transparent;
                     border-right: rem(1.1px) solid #fff;
+                    top: rem(-1px);
+                    right: -1px;
+                    z-index: 2;
+                }
+            }
+            &.prevActive{
+                &::before{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    border-top: rem(24px) solid #eee;
+                    border-bottom: rem(24px) solid #eee;
+                    border-left: rem(8.8px) solid #fff;
+                    border-right: rem(1.1px) solid #eee;
+                    height: 0;
+                    top: rem(-1px);
+                    right: 0;
+                    z-index: 1;
+                    font-size: 0;
+                }
+                &::after{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    border-top: rem(24px) solid #3aaffd;
+                    border-bottom: rem(24px) solid #3aaffd;
+                    border-left: rem(8.8px) solid transparent;
+                    border-right: rem(1.1px) solid #3aaffd;
                     top: rem(-1px);
                     right: -1px;
                     z-index: 2;
@@ -299,6 +345,13 @@ $baseline-px:37.5px;
     .right{
         padding: 0 rem(15px);
         background: #999;
+        color: #fff;
+        height: 100%;
+        line-height: rem(50px);
+    }
+    .right-ready{
+        padding: 0 rem(15px);
+        background: rgb(35, 250, 71);
         color: #fff;
         height: 100%;
         line-height: rem(50px);
