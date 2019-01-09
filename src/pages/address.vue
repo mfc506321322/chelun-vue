@@ -22,6 +22,11 @@
                     <input type="text" maxlength="5" placeholder="请输入联系人">
                 </li>
             </ul>
+            <div class="upload">
+                <input type="file" @change="fileUpload">
+                <img class="uploadImg" :src="src">
+                <canvas id="canvas"></canvas>
+            </div>
         </main>
         <footer class="footer">
             确认
@@ -40,7 +45,7 @@
                 <img src="http://localhost:8080/src/assets/IdCard/coupon.png" alt="">
                 <div class="hbBtn">
                     <button class="close" @click="onCancel">给钱都不要</button>
-                    <button class="share">果断分享</button>
+                    <button class="share" @click="share">果断分享</button>
                 </div>
             </div>
         </van-popup>
@@ -48,6 +53,7 @@
 </template>
 <script>
 import Vue from 'vue';
+import {doShare} from '../api/index.js';
 import { Popup,Picker } from 'vant';
 import AddressType from '../components/AddressType';
 import CService from '../components/CService';
@@ -59,10 +65,63 @@ export default {
         return {
             hbShow:false,
             fromShow:false,
-            qfVal:'北京 北京市 东城区'
+            qfVal:'北京 北京市 东城区',
+            src:''
         }
     },
+    created () {
+        window['CHELUN_SHARE_DATA_WXTIMELINE'] = {
+            title:'分享一张美图',
+            imgUrl:'http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E7%BE%8E%E5%9B%BE&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&hd=undefined&latest=undefined&copyright=undefined&cs=688823969,1917554187&os=4173102005,2816370139&simid=3958298243,325501998&pn=23&rn=1&di=135851914880&ln=1449&fr=&fmq=1546911346770_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fwww.gapp.gov.cn%2Fupload%2Fimages%2F2015%2F5%2F4161418918.jpeg&rpstart=0&rpnum=0&adpicid=0&force=undefined',
+            type:'photo'
+        },
+        window['CHELUN_SHARE_DATA_WXMESSAGE'] = {
+            title:'分享一份感悟',
+            desc:'微信分享测试',
+            link:'http://123.206.55.50/1605A/mengfancheng/NeteaseCloud/dist/index.html',
+            imgUrl:'http://www.pptok.com/wp-content/uploads/2012/08/xunguang-4.jpg'
+        }    
+    },
     methods: {
+        async fileUpload(e){
+            console.log('e.target...', e.target.files)
+            let reader = new FileReader();
+            reader.readAsDataURL(e.target.files[0]);
+            reader.onload = ()=>{
+                this.src = reader.result;
+                console.log('reader.result...', reader.result);
+                var img = new Image();
+                img.src = reader.result;
+                img.onload = async ()=>{
+                    console.log(img.width, img.height);
+                    var canvas = document.getElementById('canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    // 压缩画布
+                    context.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width/2, img.height/2);
+
+                    // 绘制一张网络图片
+                    // var img2 = new Image();
+                    // img2.crossOrigin = 'anonymous'
+                    // var url = 'http://123.206.55.50:11000/static/9c5ab5222bb94e9beec79ded.jpg';
+                    // let data = await imageToBase64(url)
+                    // console.log('data...', data);
+                    // img2.src = 'data:image/jpeg;base64,'+data;
+                    // img2.onload = async ()=>{
+                    //     context.drawImage(img2, 0, 0, img2.width, img2.height, 50, 50, img2.width/2, img2.height/2);
+                    //     // toDataUrl时，设置为jpeg或者图片质量
+                    //     var baseStr1 = canvas.toDataURL('image/jpeg', 0.7);
+                    //     var baseStr2 = canvas.toDataURL('image/png', 1);
+                    //     // console.log(baseStr1, baseStr2);
+                    //     let res1 = await uploadBase64(baseStr1);
+                    //     let res2 = await uploadBase64(baseStr2);
+                    //     console.log('res1...', res1, 'res2...', res2);
+                    // }
+                    //  console.log(canvas.toDataURL());
+                }
+            }
+        },
         onCancel() {
             this.fromShow=false;
             this.hbShow=false;
@@ -81,6 +140,9 @@ export default {
                 str += item.name + ' ';
             });
             this.qfVal = str;
+        },
+        share(){
+            doShare()
         }
     },
     components: {
@@ -194,6 +256,15 @@ $baseline-px:37.5px;
                 color: #333;
                 font-weight: 400;
             }
+        }
+    }
+    .upload{
+        width: 100%;
+        overflow-x: auto;
+        .uploadImg{
+            width: 100%;
+            height: auto;
+            display: block;
         }
     }
 }
